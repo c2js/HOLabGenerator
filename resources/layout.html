@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" data-guide-id="replace-with-unique-guide-id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Guide title</title>
+  <link rel="stylesheet" href="web/css/guide.css">
+  <script src="web/js/guide.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark" aria-hidden="true"><span></span></span>
+      <span class="brand-copy">
+        <span class="brand-name">Guide name</span>
+        <span class="brand-subtitle">Short topic</span>
+      </span>
+    </div>
+    <div class="topbar-actions">
+      <span class="page-count" data-guide-page-count aria-live="polite">1 of 3</span>
+      <button class="theme-toggle" data-theme-toggle type="button" aria-label="Switch to dark theme" aria-pressed="false" title="Switch to dark theme">
+        <span class="theme-icon theme-icon-sun" aria-hidden="true"></span>
+        <span class="theme-icon theme-icon-moon" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Keep the first page visible. Add hidden and aria-hidden to every later page. -->
+    <section class="page active" aria-labelledby="overview-title">
+      <div class="reading-width">
+        <p class="eyebrow">Guided tutorial</p>
+        <h1 id="overview-title" tabindex="-1">Guide title</h1>
+        <p class="lede">State the outcome the learner will achieve.</p>
+        <div class="overview-grid">
+          <div class="panel">
+            <h3>Prerequisite</h3>
+            <p>List only prerequisites supported by the source.</p>
+          </div>
+          <div class="panel">
+            <h3>In this guide</h3>
+            <ol class="outline-list">
+              <li>Summarize the first outcome.</li>
+              <li>Summarize the second outcome.</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Repeat task items and session pages as needed. Keep supporting media inside its task item. -->
+    <section class="page" aria-labelledby="session-title" hidden aria-hidden="true">
+      <p class="eyebrow">Session 1</p>
+      <h2 id="session-title" tabindex="-1">Session outcome</h2>
+      <p class="session-intro">Describe the focused outcome for this session.</p>
+      <ol class="task-list">
+        <li>
+          <label class="task-action">
+            <input type="checkbox" data-task="unique-task-key">
+            <span>Write one concise learner action.</span>
+          </label>
+          <div class="copy-block">
+            <pre><code>Exact text the learner must enter</code></pre>
+            <button class="copy-control" type="button" aria-label="Copy exact text" title="Copy exact text">
+              <span class="copy-icon" aria-hidden="true"></span>
+              <span class="copy-status" aria-live="polite"></span>
+            </button>
+          </div>
+          <aside class="note">
+            <strong>Optional context</strong>
+            Keep only essential notes supported by the source.
+          </aside>
+        </li>
+      </ol>
+
+      <!-- Optional: remove this form when the source does not justify a knowledge check. -->
+      <form class="knowledge-check" data-quiz-answer="correct" data-quiz-correct="Correct. Explain why." data-quiz-incorrect="Not quite. Point the learner to the relevant concept.">
+        <p class="eyebrow">Knowledge check</p>
+        <fieldset>
+          <legend>Ask a question based only on material taught in this guide.</legend>
+          <label class="answer-option"><input type="radio" name="answer" value="correct"><span>Correct answer</span></label>
+          <label class="answer-option"><input type="radio" name="answer" value="incorrect"><span>Plausible alternative</span></label>
+        </fieldset>
+        <div class="quiz-actions">
+          <button class="secondary-button" type="submit">Check answer</button>
+          <p class="feedback" aria-live="polite"></p>
+        </div>
+      </form>
+    </section>
+
+    <section class="page" aria-labelledby="completion-title" hidden aria-hidden="true">
+      <div class="reading-width">
+        <div class="completion-mark" aria-hidden="true">&#10003;</div>
+        <p class="eyebrow">Tutorial complete</p>
+        <h2 id="completion-title" tabindex="-1">State the completed outcome</h2>
+        <p class="lede">Summarize what the learner accomplished.</p>
+        <p class="completion-status" data-guide-completion-status aria-live="polite"></p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Update initial counts to match the number of .page sections. JavaScript maintains them after load. -->
+  <footer class="footer" data-guide-footer aria-label="Tutorial navigation">
+    <button class="nav-button" data-guide-previous type="button" disabled>Previous</button>
+    <div class="progress-wrap">
+      <span class="progress-label" data-guide-progress-label>Page 1 of 3</span>
+      <progress data-guide-progress max="3" value="1">1 of 3</progress>
+    </div>
+    <button class="nav-button primary" data-guide-next type="button">Next</button>
+  </footer>
+</body>
+</html>

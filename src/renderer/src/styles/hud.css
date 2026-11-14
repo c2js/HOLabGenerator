@@ -1,0 +1,266 @@
+:root {
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  background: transparent;
+}
+
+body.hud-body {
+  font: 13px/1.45 'Segoe UI Variable Text', 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+  user-select: none;
+  cursor: default;
+}
+
+/* Height is driven by content and reported to the main process, so nothing is
+   ever clipped at a different DPI or font scale. */
+.bar {
+  margin: 8px;
+  padding: 10px 12px 12px 6px;
+  display: grid;
+  grid-template-columns: 16px 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 6px;
+  row-gap: 10px;
+  align-content: start;
+  border-radius: 14px;
+  border: 1px solid #333a48;
+  background: rgba(16, 19, 25, 0.95);
+  color: #e7eaf0;
+  box-shadow: 0 16px 44px rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(14px);
+  transition: border-color 0.15s ease;
+}
+
+/* --------------------------------------------------------------- drag grip */
+
+.bar-grip {
+  grid-row: 1 / span 2;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3px;
+  min-height: 48px;
+  border-radius: 8px;
+  cursor: grab;
+  touch-action: none;
+}
+
+.bar-grip:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.bar-grip:active {
+  cursor: grabbing;
+}
+
+.bar-grip span {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: #4b5364;
+}
+
+/* ------------------------------------------------------------------ status */
+
+.bar-status {
+  min-width: 0;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bar-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #6b7382;
+  flex: none;
+}
+
+.bar-state {
+  font-weight: 650;
+  letter-spacing: 0.01em;
+}
+
+.bar-steps {
+  margin-left: auto;
+  color: #6b7382;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.bar-message {
+  margin-top: 2px;
+  color: #9aa3b2;
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ----------------------------------------------------------------- actions */
+
+.bar-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.bar-btn {
+  appearance: none;
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 7px 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.045);
+  color: #c3cad6;
+  font: inherit;
+  font-size: 10.5px;
+  line-height: 1.2;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.12s ease, color 0.12s ease, border-color 0.12s ease,
+    transform 0.08s ease;
+}
+
+.bar-btn > span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.bar-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.bar-btn:active:not(:disabled),
+.bar-btn.flash {
+  transform: scale(0.94);
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.bar-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.bar-btn.accent {
+  color: #6f9bff;
+  border-color: rgba(111, 155, 255, 0.35);
+  background: rgba(111, 155, 255, 0.12);
+}
+
+.bar-btn.recording {
+  color: #ef5f6b;
+  border-color: rgba(239, 95, 107, 0.5);
+  background: rgba(239, 95, 107, 0.14);
+}
+
+.bar-btn.danger:hover:not(:disabled) {
+  color: #ef5f6b;
+}
+
+.bar-divider {
+  width: 1px;
+  margin: 6px 3px;
+  background: #2c3342;
+  flex: none;
+}
+
+/* State colours: the author must be able to tell at a glance, from across the
+   screen, what the recorder is doing. The *status* carries that signal, not the
+   buttons - a permanently tinted button reads as decoration and stops meaning
+   anything. */
+
+.bar.idle {
+  border-color: rgba(111, 155, 255, 0.4);
+}
+.bar.idle .bar-dot {
+  background: #6f9bff;
+  box-shadow: 0 0 0 3px rgba(111, 155, 255, 0.18);
+}
+.bar.idle .bar-state {
+  color: #6f9bff;
+}
+
+.bar.listening {
+  border-color: rgba(239, 95, 107, 0.65);
+}
+.bar.listening .bar-dot {
+  background: #ef5f6b;
+  animation: bar-pulse 1.4s ease-in-out infinite;
+}
+.bar.listening .bar-state {
+  color: #ef5f6b;
+}
+
+.bar.transcribing {
+  border-color: rgba(232, 179, 57, 0.6);
+}
+.bar.transcribing .bar-dot {
+  background: #e8b339;
+}
+.bar.transcribing .bar-state {
+  color: #e8b339;
+}
+
+.bar.capturing {
+  border-color: rgba(91, 141, 255, 0.7);
+}
+.bar.capturing .bar-dot {
+  background: #5b8dff;
+}
+.bar.capturing .bar-state {
+  color: #5b8dff;
+}
+
+.bar.captured {
+  border-color: rgba(62, 207, 142, 0.6);
+}
+.bar.captured .bar-dot {
+  background: #3ecf8e;
+}
+.bar.captured .bar-state {
+  color: #3ecf8e;
+}
+
+.bar.error {
+  border-color: rgba(239, 95, 107, 0.8);
+}
+.bar.error .bar-dot {
+  background: #ef5f6b;
+}
+.bar.error .bar-state {
+  color: #ef5f6b;
+}
+
+@keyframes bar-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.3;
+    transform: scale(0.78);
+  }
+}

@@ -1,0 +1,24 @@
+node_modules/
+out/
+release/
+dist/
+
+# Downloaded at setup time - far too big for git.
+resources/whisper/*
+!resources/whisper/.gitkeep
+
+*.log
+selftest*.txt
+.DS_Store
+Thumbs.db
+*.tsbuildinfo
+build/icon.ico
+build/icon.png
+
+# Local lessons, conversation history and credentials never belong in source control.
+*.guide/
+.copilot-conversation*.json
+.env
+.env.*
+!.env.example
+resources/web/media/*

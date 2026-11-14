@@ -1,0 +1,78 @@
+appId: com.workshopcapture.app
+productName: Workshop Capture
+copyright: Workshop Capture
+
+# No auto-update server. Without this electron-builder tries to write update
+# metadata and fails on a repo that has no git remote.
+publish: null
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - out/**/*
+  - package.json
+  - '!**/*.map'
+  - '!**/*.ts'
+
+# Scaffolded into every project: the skill, plus the template and runtime it
+# builds against (export/layout.html and export/web/**).
+extraResources:
+  - from: resources/learning-guide-md-to-html-skills.md
+    to: learning-guide-md-to-html-skills.md
+  - from: resources/layout.html
+    to: layout.html
+  - from: resources/web
+    to: web
+    filter:
+      - '**/*'
+      # Sample captures from an earlier run; projects start with empty media.
+      - '!media/*'
+  - from: resources/whisper
+    to: whisper
+    filter:
+      - '**/*'
+      - '!*.zip'
+      - '!.gitkeep'
+
+asar: true
+asarUnpack:
+  # sharp ships native binaries that cannot be loaded from inside the archive.
+  - '**/node_modules/sharp/**'
+  - '**/node_modules/@img/**'
+  # The SDK runtime and native libraries must be real files outside the archive.
+  - '**/node_modules/@github/copilot-sdk-*/**'
+  - '**/node_modules/koffi/**'
+
+win:
+  icon: build/icon.ico
+  target:
+    - target: nsis
+      arch:
+        - x64
+  artifactName: ${productName}-${version}-setup.${ext}
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Workshop Capture
+
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - dmg
+  # Untested and unsigned for v1: Windows-first, with the Mac paths in place.
+  identity: null
+  extendInfo:
+    NSMicrophoneUsageDescription: >-
+      Workshop Capture records your narration locally so it can be transcribed
+      on this machine. Audio is never uploaded.
+
+linux:
+  target:
+    - AppImage
+  category: Development

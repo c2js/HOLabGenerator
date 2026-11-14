@@ -1,0 +1,2 @@
+Whisper binaries and models are downloaded here by `npm run fetch:whisper`.
+They are intentionally not committed.
