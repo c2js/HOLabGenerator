@@ -1,9 +1,10 @@
 {
-  "name": "workshop-capture",
+  "name": "hands-on-lab-generator",
+  "productName": "Hands On Lab Generator",
   "version": "0.1.0",
-  "description": "Capture a workshop and build a portable HTML guide with an in-app Copilot conversation.",
+  "description": "Create hands-on lab guides with voice dictation, screenshots and an in-app Copilot conversation.",
   "main": "./out/main/index.js",
-  "author": "Workshop Capture",
+  "author": "Hands On Lab Generator",
   "license": "MIT",
   "private": true,
   "type": "module",

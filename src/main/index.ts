@@ -23,8 +23,14 @@ import { WhisperEngine } from './capture/whisper'
 import { BINDINGS, registerHotkeys, type HotkeyRegistration } from './capture/hotkeys'
 import { verifyWebGuide } from './build/verifyWeb'
 import { CopilotConversation } from './build/copilot'
-import { createMainWindow, createControlBar, placeControlBar } from './windows'
-import { SettingsStore } from './settings'
+import {
+  CONTROL_BAR_HEIGHT,
+  CONTROL_BAR_WIDTH,
+  createMainWindow,
+  createControlBar,
+  placeControlBar
+} from './windows'
+import { preserveLegacyUserData, SettingsStore } from './settings'
 
 const MEDIA_SCHEME = 'wcmedia'
 
@@ -46,6 +52,7 @@ let controller: CaptureController | null = null
 let hotkeys: HotkeyRegistration | null = null
 let mainWindow: BrowserWindow | null = null
 let controlBar: BrowserWindow | null = null
+let controlBarHeight = CONTROL_BAR_HEIGHT
 /** True only while compact mode is the reason the main window is hidden. */
 let hiddenByCompact = false
 /** True while the control bar is hidden so it cannot appear in a snip. */
@@ -430,7 +437,14 @@ function registerIpc(): void {
   ipcMain.handle(CH.uiMoveControlBar, (_e, dx: number, dy: number) => {
     if (!controlBar || controlBar.isDestroyed()) return
     const [x, y] = controlBar.getPosition()
-    controlBar.setPosition(Math.round(x + dx), Math.round(y + dy))
+    // setPosition round-trips the native size, accumulating DPI rounding on Windows.
+    // Always use the intended dimensions rather than the last rounded dimensions.
+    controlBar.setBounds({
+      x: Math.round(x + dx),
+      y: Math.round(y + dy),
+      width: CONTROL_BAR_WIDTH,
+      height: controlBarHeight
+    })
   })
 
   ipcMain.handle(CH.uiResizeControlBar, (_e, height: number) => {
@@ -438,11 +452,12 @@ function registerIpc(): void {
     // The renderer measures its own content, so the bar fits at any DPI or
     // font-scaling setting rather than trusting a hard-coded height.
     const target = Math.max(80, Math.min(260, Math.round(height)))
+    controlBarHeight = target
     const [width, current] = controlBar.getSize()
-    if (Math.abs(current - target) <= 1) return
+    if (Math.abs(current - target) <= 1 && Math.abs(width - CONTROL_BAR_WIDTH) <= 1) return
 
     const [x, y] = controlBar.getPosition()
-    controlBar.setBounds({ x, y, width, height: target })
+    controlBar.setBounds({ x, y, width: CONTROL_BAR_WIDTH, height: target })
   })
 }
 
@@ -457,6 +472,8 @@ if (isSelfTest) {
   // (the projects folder, compact mode), and it has no business overwriting
   // what the person using this machine actually chose.
   app.setPath('userData', join(app.getPath('temp'), `wc-selftest-profile-${process.pid}`))
+} else {
+  preserveLegacyUserData()
 }
 
 const gotLock = app.requestSingleInstanceLock()
@@ -466,7 +483,7 @@ if (!gotLock) {
   // asserted precisely nothing - a silent pass, which is worse than a failure.
   if (isSelfTest) {
     console.error(
-      'Self-test aborted: another Workshop Capture instance already holds the single-instance lock.'
+      'Self-test aborted: another Hands On Lab Generator instance already holds the single-instance lock.'
     )
     app.exit(1)
   } else {

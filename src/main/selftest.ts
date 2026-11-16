@@ -1,7 +1,8 @@
 import { promises as fs } from 'node:fs'
 import { join } from 'node:path'
-import { app, type BrowserWindow } from 'electron'
+import { app, screen, type BrowserWindow } from 'electron'
 import sharp from 'sharp'
+import { CONTROL_BAR_WIDTH } from './windows'
 
 export interface SelfTestContext {
   mainWindow: BrowserWindow
@@ -55,6 +56,18 @@ export async function runSelfTest(ctx: SelfTestContext): Promise<void> {
     const found = await evaluate<boolean>('!!document.querySelector(".welcome-form")')
     if (!found) throw new Error('.welcome-form not found in the DOM')
     return 'ok'
+  })
+
+  await check('product branding appears in the app and both windows', async () => {
+    const name = 'Hands On Lab Generator'
+    const brand = await evaluate<string>('document.querySelector(".welcome-brand")?.textContent.trim()')
+    const title = await evaluate<string>('document.title')
+    const hudTitle = await ctx.controlBar?.webContents.executeJavaScript('document.title')
+    if (app.getName() !== name || brand !== name || title !== name || window.getTitle() !== name ||
+      hudTitle !== `${name} HUD`) {
+      throw new Error(`Branding mismatch: app=${app.getName()}, welcome=${brand}, title=${title}, HUD=${hudTitle}`)
+    }
+    return name
   })
 
   await check('renderer reported no errors', async () => {
@@ -188,7 +201,7 @@ export async function runSelfTest(ctx: SelfTestContext): Promise<void> {
     await check('real SDK conversation streams and remembers a follow-up', async () => {
       const project = await evaluate<{ path: string }>('window.api.project.current()')
       const model = process.env['WC_SELFTEST_COPILOT_MODEL'] || 'gpt-5.6-terra'
-      const marker = `WORKSHOP_SDK_${Date.now()}`
+      const marker = `HOLAB_SDK_${Date.now()}`
       await evaluate(`window.api.copilot.send(${JSON.stringify({
         projectPath: project.path, model, allowTools: false,
         prompt: `Remember the test marker ${marker}. Reply "Remembered" without using any tools.`
@@ -217,12 +230,12 @@ export async function runSelfTest(ctx: SelfTestContext): Promise<void> {
           projectPath: project.path,
           model: process.env['WC_SELFTEST_COPILOT_MODEL'] || 'gpt-5.6-terra',
           allowTools: true,
-          prompt: 'For this integration check only, create export/sdk-check.txt containing exactly WORKSHOP_SDK_OK. Do not read other files or run shell commands. Reply briefly when done.'
+          prompt: 'For this integration check only, create export/sdk-check.txt containing exactly HOLAB_SDK_OK. Do not read other files or run shell commands. Reply briefly when done.'
         })})`)
         const state = await evaluate<{ error?: string }>('window.api.copilot.state()')
         if (state.error) throw new Error(state.error)
         const written = await fs.readFile(join(project.path, 'export', 'sdk-check.txt'), 'utf8')
-        if (written.trim() !== 'WORKSHOP_SDK_OK') throw new Error('SDK file-writing tool did not produce the requested content')
+        if (written.trim() !== 'HOLAB_SDK_OK') throw new Error('SDK file-writing tool did not produce the requested content')
         return 'actual SDK file tool, exact requested content'
       })
     }
@@ -292,6 +305,49 @@ export async function runSelfTest(ctx: SelfTestContext): Promise<void> {
 
     await evaluate('window.api.ui.moveControlBar(-37, -23)')
     return 'moves by exact deltas'
+  })
+
+  await check('dragging the control bar preserves its size on every display', async () => {
+    const bar = ctx.controlBar
+    if (!bar || bar.isDestroyed()) throw new Error('no control bar')
+    const original = bar.getBounds()
+    const scales: number[] = []
+
+    try {
+      for (const display of screen.getAllDisplays()) {
+        const area = display.workArea
+        bar.setBounds({
+          x: area.x + Math.round((area.width - CONTROL_BAR_WIDTH) / 2),
+          y: area.y + Math.round((area.height - original.height) / 2),
+          width: CONTROL_BAR_WIDTH,
+          height: original.height
+        })
+        await delay(200)
+        const before = bar.getBounds()
+
+        for (let i = 0; i < 80; i++) {
+          const delta = i % 2 ? -1 : 1
+          await evaluate(`window.api.ui.moveControlBar(${delta}, ${delta})`)
+        }
+        await delay(200)
+
+        const after = bar.getBounds()
+        // DIP/physical-pixel conversion can round once, but must never accumulate.
+        if (Math.abs(after.width - CONTROL_BAR_WIDTH) > 1 ||
+          Math.abs(after.width - before.width) > 1 ||
+          Math.abs(after.height - before.height) > 1) {
+          throw new Error(
+            `At ${display.scaleFactor * 100}% scale, 80 moves changed ` +
+            `${before.width}x${before.height} to ${after.width}x${after.height}`
+          )
+        }
+        scales.push(display.scaleFactor)
+      }
+    } finally {
+      bar.setBounds(original)
+    }
+
+    return `80 moves per display; scale factors ${scales.join(', ')}`
   })
 
   await check('scaffolds the HTML-generation skill into the project', async () => {
@@ -544,7 +600,7 @@ export async function runSelfTest(ctx: SelfTestContext): Promise<void> {
 
   const passed = results.filter((r) => r.ok).length
   const report = [
-    `Workshop Capture self-test: ${passed}/${results.length} passed`,
+    `Hands On Lab Generator self-test: ${passed}/${results.length} passed`,
     ...results.map((r) => `  ${r.ok ? 'PASS' : 'FAIL'}  ${r.name}${r.detail ? ` - ${r.detail}` : ''}`)
   ].join('\n')
 

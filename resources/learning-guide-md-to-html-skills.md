@@ -1,6 +1,6 @@
 ---
 name: learning-guide-md-to-html
-description: "Generates or regenerates export/web/guide.html from workshop-capture export/guide.md and referenced screenshots, using export/layout.html and the canonical split web assets. Use for guide export, narration captures, image tokens, author notes, or rebuilding the portable web tutorial."
+description: "Generates or regenerates export/web/guide.html from Hands On Lab Generator export/guide.md and referenced screenshots, using export/layout.html and the canonical split web assets. Use for guide export, narration captures, image tokens, author notes, or rebuilding the portable web tutorial."
 compatibility: "Designed for coding agents with file editing and browser automation."
 metadata:
   version: "2.0.0"

@@ -22,7 +22,7 @@ export function createMainWindow(): BrowserWindow {
     minHeight: 620,
     show: false,
     backgroundColor: '#0f1115',
-    title: 'Workshop Capture',
+    title: 'Hands On Lab Generator',
     autoHideMenuBar: true,
     webPreferences: {
       preload: join(__dirname, '../preload/index.mjs'),
@@ -59,6 +59,8 @@ export function createControlBar(): BrowserWindow {
   const win = new BrowserWindow({
     width: CONTROL_BAR_WIDTH,
     height: CONTROL_BAR_HEIGHT,
+    minWidth: CONTROL_BAR_WIDTH,
+    maxWidth: CONTROL_BAR_WIDTH,
     show: false,
     frame: false,
     transparent: true,
@@ -116,5 +118,9 @@ export function placeControlBar(win: BrowserWindow, saved?: { x: number; y: numb
   // A monitor that has since been unplugged would otherwise strand the bar
   // off-screen with no way to get it back.
   const position = visible ? target : defaultControlBarPosition()
-  win.setPosition(position.x, position.y)
+  win.setBounds({
+    ...position,
+    width: CONTROL_BAR_WIDTH,
+    height: CONTROL_BAR_HEIGHT
+  })
 }

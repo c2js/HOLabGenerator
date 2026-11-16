@@ -1,6 +1,7 @@
+# Retain the installer identity so existing installations can be upgraded.
 appId: com.workshopcapture.app
-productName: Workshop Capture
-copyright: Workshop Capture
+productName: Hands On Lab Generator
+copyright: Hands On Lab Generator
 
 # No auto-update server. Without this electron-builder tries to write update
 # metadata and fails on a repo that has no git remote.
@@ -59,7 +60,7 @@ nsis:
   allowToChangeInstallationDirectory: true
   createDesktopShortcut: true
   createStartMenuShortcut: true
-  shortcutName: Workshop Capture
+  shortcutName: Hands On Lab Generator
 
 mac:
   category: public.app-category.developer-tools
@@ -69,7 +70,7 @@ mac:
   identity: null
   extendInfo:
     NSMicrophoneUsageDescription: >-
-      Workshop Capture records your narration locally so it can be transcribed
+      Hands On Lab Generator records your narration locally so it can be transcribed
       on this machine. Audio is never uploaded.
 
 linux:

@@ -11,7 +11,9 @@ import { tmpdir } from 'node:os'
 export const app = {
   getAppPath: () => resolve('.'),
   getPath: (name: string) => (name === 'userData' ? resolve(tmpdir(), 'wc-test-userdata') : tmpdir()),
-  getName: () => 'workshop-capture'
+  getName: () => 'Hands On Lab Generator',
+  get isPackaged() { return false },
+  setPath: (_name: string, _path: string): void => undefined
 }
 
 /** A controllable fake clipboard, so the snip pipeline can be tested headlessly. */

@@ -50,12 +50,12 @@ export default function Welcome({ onCreated, busy, setBusy }: Props): React.JSX.
       <div className="welcome-card">
         <div className="welcome-brand">
           <span className="dot" />
-          Workshop Capture
+          Hands On Lab Generator
         </div>
         <h1>Narrate the task once.</h1>
         <p className="lede">
           Talk through what you are doing and grab screenshots with your normal hotkeys. Everything
-          lands in order, ready to hand to an AI and turn into a self-contained HTML guide.
+          lands in order, ready to hand to Copilot and turn into a portable HTML lab guide.
         </p>
 
         <form onSubmit={create} className="welcome-form">

@@ -1,4 +1,4 @@
-import { promises as fs } from 'node:fs'
+import { existsSync, promises as fs } from 'node:fs'
 import { join } from 'node:path'
 import { EventEmitter } from 'node:events'
 import { app } from 'electron'
@@ -24,9 +24,18 @@ export interface AppSettings {
   miniBar?: { x: number; y: number }
 }
 
+/** Keep settings, microphone permissions and local models after the product rename. */
+export function preserveLegacyUserData(): void {
+  const legacy = join(app.getPath('appData'), app.isPackaged ? 'Workshop Capture' : 'workshop-capture')
+  if (existsSync(legacy)) {
+    app.setPath('userData', legacy)
+    app.setPath('sessionData', legacy)
+  }
+}
+
 function defaults(): AppSettings {
   return {
-    projectsDir: join(app.getPath('documents'), 'Workshop Guides'),
+    projectsDir: join(app.getPath('documents'), 'Hands On Lab Generator'),
     showMiniBar: true,
     compact: false,
     compactOnCreate: true,

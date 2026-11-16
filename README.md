@@ -1,10 +1,12 @@
-# Workshop Capture
+# Hands On Lab Generator
 
 Narrate a task once, grab screenshots with the hotkeys you already use, and end
-up with a portable HTML step-by-step guide.
+up with a portable HTML step-by-step lab guide.
 
 The app captures and organises. An **in-app GitHub Copilot conversation** turns
 the capture into a portable HTML tutorial using the project's bundled skill.
+
+Repository: [c2js/HOLabGenerator](https://github.com/c2js/HOLabGenerator).
 
 ---
 
@@ -119,15 +121,20 @@ to activate — so dragging is driven from pointer deltas with pointer capture,
 which is what keeps it tracking once the cursor leaves the bar.
 
 Its height is measured from its own content and reported to the main process, so
-buttons are never clipped at a different DPI or font-scaling setting. Drag it
-anywhere by the grip on its left; the position is remembered, and it is pulled
-back on-screen if the monitor it was on disappears.
+buttons are never clipped at a different DPI or font-scaling setting. Its width
+stays fixed while dragging, including between displays with different scaling.
+Drag it anywhere by the grip on its left; the position is remembered, and it is
+pulled back on-screen if the monitor it was on disappears.
 
 ### Where guides are saved
 
 Configurable on the welcome screen — *Guides are saved in …* with **Change…**
-and **Open**. It defaults to `Documents\Workshop Guides`, and the choice is
+and **Open**. It defaults to `Documents\Hands On Lab Generator`, and the choice is
 stored in `settings.json` under the app's user-data folder.
+
+Existing installations keep their saved folder choice, microphone settings,
+permissions and local models. The previous user-data directory is reused when
+present; existing guides are not moved or renamed.
 
 ### Storyboard shortcuts
 
@@ -201,7 +208,7 @@ single-instance lock rather than exiting 0 having asserted nothing.
 npm run package:win
 ```
 
-That produces **`release\Workshop Capture-0.1.0-setup.exe`** (it includes Electron,
+That produces **`release\Hands On Lab Generator-0.1.0-setup.exe`** (it includes Electron,
 the Whisper engine/model and the Copilot runtime). Run the installer and
 the app appears in the Start Menu and on the desktop like anything else — no
 terminal, no `npm run dev`.
@@ -211,7 +218,7 @@ can choose the install location. The build is **unsigned**, so SmartScreen will
 warn on first run: *More info → Run anyway*.
 
 `npm run package:dir` skips the installer and just produces
-`release\win-unpacked\Workshop Capture.exe` if you would rather run it from a
+`release\win-unpacked\Hands On Lab Generator.exe` if you would rather run it from a
 folder or a USB stick.
 
 ---
@@ -242,6 +249,9 @@ My Guide.guide/
 
 `project.json` is the source of truth; `guide.md` is generated from it. Edit
 steps in the app, not in `guide.md`.
+
+The legacy `workshop-capture/v1` format marker and installer application ID stay
+unchanged for compatibility; they are not the displayed product name.
 
 **The skill and its template travel with the project.** Every new guide is
 scaffolded with `SKILL.md`, `layout.html` and the `web/` assets, so opening the

@@ -8,6 +8,7 @@
  */
 
 export const FORMAT_VERSION = 1 as const
+/** Stable on-disk identifier, retained for guides created before the product rename. */
 export const FORMAT_ID = 'workshop-capture/v1' as const
 
 /** Operating systems we target. Kept here so shared code needs no Node types. */

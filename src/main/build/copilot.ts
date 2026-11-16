@@ -256,7 +256,7 @@ export class CopilotConversation {
       if (!this.session) {
         const config: SessionConfig = {
           model: state.model,
-          clientName: 'workshop-capture',
+          clientName: 'hands-on-lab-generator',
           workingDirectory: project.path,
           streaming: true,
           includeSubAgentStreamingEvents: false,

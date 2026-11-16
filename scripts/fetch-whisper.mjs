@@ -130,7 +130,7 @@ async function fetchBinary() {
   console.log('--> Looking for a Windows build in the latest whisper.cpp release')
 
   const response = await fetch(RELEASES_API, {
-    headers: { 'user-agent': 'workshop-capture-setup', accept: 'application/vnd.github+json' }
+    headers: { 'user-agent': 'hands-on-lab-generator-setup', accept: 'application/vnd.github+json' }
   })
 
   if (!response.ok) {
