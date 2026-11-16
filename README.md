@@ -8,9 +8,9 @@ Capture your workflow, review the steps, and build the tutorial through an
 
 ## See it in action
 
-![Animated interface tour: setup, Storyboard, Review, Generate and compact controls](https://github.com/user-attachments/assets/b284f17a-c158-478b-a480-6e5896bdcadc)
+![Animated interface tour: setup, Storyboard, Review, Generate, compact controls and the finished HTML guide](https://github.com/user-attachments/assets/a6ab8789-695f-400d-a605-4b0ecd3d91d5)
 
-A 21-second tour of real app screens with a sample lesson, not a live AI-generation recording.
+A 27-second tour of real app screens and a finished HTML guide, not a live AI-generation recording.
 
 <details>
 <summary>View individual screenshots</summary>
